@@ -1,7 +1,25 @@
 #include "stm32l476xx.h"
 #include "LCD_structures.h"
 
-//The following three Methods do the register setup for their respective jurisdictions
+
+volatile uint32_t result;
+
+
+//Interrupt Handler for ADC 1/2 
+void ADC1_2_IRQHandler(void){
+	NVIC_ClearPendingIRQ(ADC1_2_IRQn);
+	
+	//ADC End of Conversion (EOC)
+	if ((ADC1->ISR & ADC_ISR_EOC) == ADC_ISR_EOC) {
+		ADC1->ISR |= ADC_ISR_EOC;	//Cear by writing 1 to it or by reading the corresponding ADCx_JDRy register
+	}
+	
+	//ADC End of Injected Sequence of Conversions  (JEOS)
+	if ((ADC1->ISR & ADC_ISR_EOS) == ADC_ISR_EOS) {
+		ADC1->ISR |= ADC_ISR_EOS;		//Cear JEOS by writing 1 to it.
+	}
+}
+
 	/*  =========================================================================
                                  LCD MAPPING
     =========================================================================
@@ -248,7 +266,7 @@ void LCD_Initialization(void){
 
 
 void initSensor(){
-	//Use GPIOA 1,2 for ADC
+	//Use GPIOA 1,2 for ADC, Independent, continuous conversio, 12bit resolution  
 	//Ues GPIOE 12,13,14,15 for the IR sensors 
 
 ////Enable ADC CLK
@@ -308,10 +326,13 @@ void initSensor(){
 ////ADC control register 1 (ADC_CR1)
 	ADC1->CFGR &= 0100; 							//Set bits 3-4 and resolution to 10bit // ~ADC_CFGR_RES; // Resolution, (00 = 12-bit, 01 = 10-bit, 10 = 8-bit, 11 = 6-bit)
 	ADC1->CFGR &= ~ADC_CFGR_ALIGN;   	//Right aligned data //Data Alignment (0 = Right alignment, 1 = Left alignment)
+	ADC1->CFGR &= ~ADC_CFGR_CONT;     // ADC Single Conversion mode 		
+	//External hardware trigger polarity
+	//00: Disabled [software trigger] | 01: Rising edge | 10: Falling edge | 11: Rising and Falling edge
+	ADC1->CFGR &= ~ADC_CFGR_EXTEN; //Hardware Trigger detection disabled, software used 
 	
 ////ADC regular sequence register 1 (ADC_SQR1)
-	ADC1->SQR1 &= ~ADC_SQR1_L;       	//1 ADC Conversion  //0000: 1 conversion in the regular channel conversion sequence
-	
+	ADC1->SQR1 &= ~ADC_SQR1_L;       	//1 ADC Conversion  //0000: 1 conversion in the regular channel conversion sequence	
 	//Specificy the channel number of the 1st conversion in regular sequence
 	//SQ1[4:0] bits (1st conversion in regular sequence)					
 	ADC1->SQR1 &= ~ADC_SQR1_SQ1;
@@ -328,55 +349,32 @@ void initSensor(){
 	//   010: 12.5 ADC clock cycles     011: 24.5 ADC clock cycles
 	//   100: 47.5 ADC clock cycles     101: 92.5 ADC clock cycles
 	//   110: 247.5 ADC clock cycles    111: 640.5 ADC clock cycles	
-	
 	//ADC_SMPR3_SMP5 = Channel 5 Sample time selection
 	//Sample time for first channel, NOTE: These bits must be written only when ADON=0. 
 	ADC1->SMPR1  &= ~ADC_SMPR1_SMP6;      //Clear ch6 ADC Sample Time setting 
 	ADC1->SMPR1  |= 3U << 18;             //Set ch6 sample time to: 0011: 24.5 ADC clock cycles. [24.5*80MHz = 0.3 us]
-//STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE //STOPPED HERE
 	
-	
-	
-	
-	// ADC control register 2 (ADC_CR2)
-	// L1: ADC1->CR2 			&=  ~ADC_CR2_CONT;    // Disable Continuous conversion mode		
-	ADC1->CFGR &= ~ADC_CFGR_CONT;               // ADC Single/continuous conversion mode for regular conversion		
-	
-	// L1: NVIC_SetPriority(ADC1_IRQn, 1); // Set Priority to 1
-	// L1: NVIC_EnableIRQ(ADC1_IRQn);      // Enable interrupt form ACD1 peripheral
-	
-	// L1: ADC1->CR1 		  |= ADC_CR1_EOCIE; 							// Enable interrupt: End Of Conversion
-	// ADC1->IER |= ADC_IER_EOC;  // Enable End of Regular Conversion interrupt
-	// ADC1->IER |= ADC_IER_EOS;            // Enable ADC End of Regular Sequence of Conversions Interrupt		
-	// NVIC_EnableIRQ(ADC1_2_IRQn);
-	
-	// Configuring the trigger polarity for regular external triggers
-	// 00: Hardware Trigger detection disabled, software trigger detection enabled
-	// 01: Hardware Trigger with detection on the rising edge
-	// 10: Hardware Trigger with detection on the falling edge
-	// 11: Hardware Trigger with detection on both the rising and falling edges
-	ADC1->CFGR &= ~ADC_CFGR_EXTEN; 
-	
-	// Enable ADC1
-	// L1: ADC1->CR2  |= ADC_CR2_ADON;     // Turn on conversion	
-	ADC1->CR |= ADC_CR_ADEN;  
+////Enable ADC1     
+	ADC1->CR |= ADC_CR_ADEN;  	//EN conversion	
 	while((ADC1->ISR & ADC_ISR_ADRDY) == 0); 
-	
-	// L1: ADC1->CR2  |= ADC_CR2_CFG;       // ADC configuration: 0: Bank A selected; 1: Bank B selected
-	// L1: ADC1->CR2	|= ADC_CR2_SWSTART;		// Start Conversion of regular channels	
-	// L1: while(ADC1->CR2 & ADC_CR2_CFG);	// Wait until configuration completes			
-
 }
 
 void initInterrupt(){
 
 }
 
+//Converts a uint16_t number to int and splits it into 10's and 1's place
+void ADCtoDisp(uint16_t result, int upper, int lower) 
+{
+	int intResult = result; 	//Cast to int 
+	
+	upper = intResult/10; 		//Get digit for LCD position[0]; 10's place
+	lower = intResult%10; 		//Get digit for LCD position[1]; 1's place 
+}
 
 encoding characters_to_display[6] = {0};
 
 //Decodes and sends char data to the LCD RAM
-
 void LCDupdate(){
 	
 	//LCD->SR |= LCD_SR_UDR; 	
@@ -384,8 +382,7 @@ void LCDupdate(){
 	
 	//LCD->RAM[0] = 0xffffffff; 
 	
-	
-	char2mem(digit_1, alpha[2]);//characters_to_display[0]);
+	char2mem(digit_1, characters_to_display[0]);
 	char2mem(digit_2, characters_to_display[1]);
 	char2mem(digit_3, characters_to_display[2]);
 	char2mem(digit_4, characters_to_display[3]);
@@ -401,9 +398,16 @@ void LCDupdate(){
 
 //Reads sensor data                         //do we want a seperate data converter that calls LCDupdate?????
 void collector(){
+	int upper = 0, lower =0;
 	
-	characters_to_display[0] = alpha[3];
-	characters_to_display[1] = alpha[3];
+	ADC1->CR |= ADC_CR_ADSTART;				//Starts ADC Conversion 
+		while ( (ADC123_COMMON->CSR | ADC_CSR_EOC_MST) == 0);
+		result = ADC1->DR;
+	
+	ADCtoDisp(result, upper, lower); 	//Convert uint16_t result to int and split into 10's and 1's place
+	
+	characters_to_display[0] = numbers[upper];
+	characters_to_display[1] = numbers[lower];
 	characters_to_display[2] = alpha[3];
 	characters_to_display[3] = alpha[3];
 	characters_to_display[4] = alpha[3];
