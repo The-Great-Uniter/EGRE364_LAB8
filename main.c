@@ -162,6 +162,7 @@ void collector()
 ////Initialize all components and read sensor inputs continuously
 int main(void)
 {
+	System_Clock_Init();	//Start and initlize sys CLK
 	LCD_Initialization();	//Initlize all LCD related registers and clocks
 	initADC();						//Initlize all ADC related registers and clocks
 	initIR();							//Initlize all IR sensor related registers and clocks
