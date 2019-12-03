@@ -35,10 +35,6 @@ typedef struct {
 	uint8_t DP : 1;
 } encoding;
 
-extern const encoding alpha[26]; 
-extern const encoding numbers[10];
-extern const encoding special[3]; 
-
 #define digit_1 1
 #define digit_2 2
 #define digit_3 3
@@ -48,5 +44,9 @@ extern const encoding special[3];
 #define digit_bar 7
 
 void char2mem (uint8_t digit, encoding character);
+
+extern const encoding numbers[10];
+extern const encoding alpha[26];
+extern const encoding special[3];
 
 #endif
