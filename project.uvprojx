@@ -412,6 +412,26 @@
               <FileType>5</FileType>
               <FilePath>.\LCD_structures.h</FilePath>
             </File>
+            <File>
+              <FileName>setupHeaders.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\setupHeaders.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADCinit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ADCinit.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDinit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LCDinit.c</FilePath>
+            </File>
+            <File>
+              <FileName>IRinit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\IRinit.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

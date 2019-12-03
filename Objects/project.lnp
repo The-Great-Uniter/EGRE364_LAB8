@@ -2,6 +2,9 @@
 ".\objects\main.o"
 ".\objects\startup_stm32l476xx.o"
 ".\objects\lcd_structures.o"
+".\objects\adcinit.o"
+".\objects\lcdinit.o"
+".\objects\irinit.o"
 --strict --scatter ".\Objects\project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
