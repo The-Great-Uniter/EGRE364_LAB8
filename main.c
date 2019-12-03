@@ -96,12 +96,8 @@ void LCDupdate()
 	
 	//LCD->RAM[0] = 0xffffffff; 
 	
-	char2mem(digit_1, characters_to_display[0]);
-	char2mem(digit_2, characters_to_display[1]);
-	char2mem(digit_3, characters_to_display[2]);
-	char2mem(digit_4, characters_to_display[3]);
-	char2mem(digit_5, characters_to_display[4]);
-	char2mem(digit_6, characters_to_display[5]);
+	char2mem(digit_1, alpha[0]);
+	
 	LCD->SR |= LCD_SR_UDR; 											//Request update display
 	
 	while ((LCD->SR&LCD_SR_UDD) == 0); 					//Wait for update display done
@@ -148,7 +144,7 @@ void collector()
 	RRsensor = IRtoDisp(RRresult);
 	
 	//Display current sensor readings on LCD
-	characters_to_display[0] = alpha[0];
+	characters_to_display[0] = numbers[upper];
 	characters_to_display[1] = numbers[lower];
 	characters_to_display[2] = alpha[LLsensor];
 	characters_to_display[3] = alpha[LCsensor];
@@ -162,12 +158,12 @@ void collector()
 ////Initialize all components and read sensor inputs continuously
 int main(void)
 {
-	System_Clock_Init();	//Start and initlize sys CLK
+	//System_Clock_Init();	//Start and initlize sys CLK
 	LCD_Initialization();	//Initlize all LCD related registers and clocks
 	initADC();						//Initlize all ADC related registers and clocks
 	initIR();							//Initlize all IR sensor related registers and clocks
 	//initInterrupt();			//Initlize all Interrupt related registers
-	
+	LCDupdate();
 	while(1){
 	collector();					//'main' function; collects data and updates LCD
 	}
