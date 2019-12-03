@@ -42,7 +42,6 @@ void initADC()
 	//ADC123_COMMON->CCR |= 6U;  // 00110: Regular simultaneous mode only
 	
 	
-	
 ////ADC Wakeup 
 	int wait_time;
 	

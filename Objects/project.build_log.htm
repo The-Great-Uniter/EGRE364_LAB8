@@ -32,18 +32,20 @@ compiling IRinit.c...
 compiling ADCinit.c...
 compiling main.c...
 main.c(29): warning:  #550-D: parameter "upper"  was set but never used
-  void ADCtoDisp(uint16_t result, int upper, int lower) 
+  void ADCtoDisp(uint16_t result, int upper, int lower, int bar) 
 main.c(29): warning:  #550-D: parameter "lower"  was set but never used
-  void ADCtoDisp(uint16_t result, int upper, int lower) 
-main.c(41): warning:  #940-D: missing return statement at end of non-void function "IRtoDisp" 
-  }
+  void ADCtoDisp(uint16_t result, int upper, int lower, int bar) 
+main.c(29): warning:  #550-D: parameter "bar"  was set but never used
+  void ADCtoDisp(uint16_t result, int upper, int lower, int bar) 
 main.c: 3 warnings, 0 errors
 compiling LCDinit.c...
 compiling LCD_structures.c...
 linking...
-Program Size: Code=4674 RO-data=658 RW-data=24 ZI-data=1672  
-FromELF: creating hex file...
-".\Objects\project.axf" - 0 Error(s), 3 Warning(s).
+.\Objects\project.axf: Error: L6200E: Symbol System_Clock_Init multiply defined (by irinit.o and adcinit.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+".\Objects\project.axf" - 1 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -66,6 +68,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.3.0
+Target not created.
 Build Time Elapsed:  00:00:01
 </pre>
 </body>
