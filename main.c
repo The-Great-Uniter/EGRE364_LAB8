@@ -148,7 +148,7 @@ void collector()
 	RRsensor = IRtoDisp(RRresult);
 	
 	//Display current sensor readings on LCD
-	characters_to_display[0] = numbers[upper];
+	characters_to_display[0] = alpha[0];
 	characters_to_display[1] = numbers[lower];
 	characters_to_display[2] = alpha[LLsensor];
 	characters_to_display[3] = alpha[LCsensor];

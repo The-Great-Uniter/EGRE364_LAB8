@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>.\IRinit.c</FilePath>
             </File>
+            <File>
+              <FileName>sys_clk_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sys_clk_init.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
