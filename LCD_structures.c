@@ -105,7 +105,7 @@ typedef struct LCD_RAM_MASK {
 	uint32_t _1h : 1;
 	uint32_t _1n : 1;
 	uint32_t _2h : 1;
-	uint32_t _2b : 1;
+	uint32_t _2n : 1;
 	uint32_t     : 1;
 	uint32_t _0bar : 1;
 	uint32_t _6j : 1;
@@ -293,8 +293,12 @@ const encoding alpha[26] = {
 	{.A=1, .K=1, .Q=1, .D=1}					// Z
 };
 
-const encoding special[3] = { // some of these may be ORRed with specific digits to produce desired display
+const encoding special[7] = { // some of these may be ORRed with specific digits to produce desired display
 	{.G=1, .M=1},	// -
 	{.Col=1},		// :
-	{.DP=1}			// .
+	{.DP=1},			// .
+	{.Bar0=1},
+	{.Bar0=1, .Bar1=1},
+	{.Bar0=1, .Bar1=1, .Bar2=1},
+	{.Bar0=1, .Bar1=1, .Bar2=1, .Bar3=1}
 };

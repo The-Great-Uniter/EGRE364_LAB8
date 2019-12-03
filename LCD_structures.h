@@ -47,6 +47,6 @@ void char2mem (uint8_t digit, encoding character);
 
 extern const encoding numbers[10];
 extern const encoding alpha[26];
-extern const encoding special[3];
+extern const encoding special[7];
 
 #endif

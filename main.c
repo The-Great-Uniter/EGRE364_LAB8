@@ -75,18 +75,8 @@ void ADCtoDisp(uint16_t result, int upper, int lower, int bar)
 	}
 }
 
-//Converts a uint16_t number into to an int value corresponding to 'B' [2] or 'W' [21] on the LCD
-int IRtoDisp(uint16_t IRresult) //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!MAY need to change input type!!!!!!!!!!!!!!!!!!!!!!
-{
-	if (IRresult == 1)
-		return 2; 
-	else
-		return 1;
-}
-
-
 ////LCD Update routine 
-encoding characters_to_display[6] = {0};
+encoding characters_to_display[7] = {0};
 
 //Decodes and sends char data to the LCD RAM
 void LCDupdate()
@@ -96,7 +86,13 @@ void LCDupdate()
 	
 	//LCD->RAM[0] = 0xffffffff; 
 	
-	char2mem(digit_1, alpha[0]);
+	char2mem(digit_1, characters_to_display[0]);
+	char2mem(digit_2, characters_to_display[1]);
+	char2mem(digit_3, characters_to_display[2]);
+	char2mem(digit_4, characters_to_display[3]);
+	char2mem(digit_5, characters_to_display[4]);
+	char2mem(digit_6, characters_to_display[5]);
+	char2mem(digit_bar, characters_to_display[6]);
 	
 	LCD->SR |= LCD_SR_UDR; 											//Request update display
 	
@@ -109,7 +105,7 @@ void LCDupdate()
 ////Reads sensor data and sends results to LCD                      
 void collector()
 {
-	int upper = 0, lower = 0, numBars = 0, LLsensor = 0, LCsensor = 0, RCsensor = 0, RRsensor = 0;
+	int upper = 0, lower = 0, numBars = 0, LLsensor = 1, LCsensor = 0, RCsensor = 0, RRsensor = 0;
 	
 	//Starts ADC Conversion and collects the result 
 	ADC1->CR |= ADC_CR_ADSTART;				
@@ -118,7 +114,7 @@ void collector()
 	
 	//IR sensor controller 
 	int32_t counter = 0;
-	int32_t threshold = 0x2000;
+	int32_t threshold = 80;
 	
 	GPIOE->MODER |= 1U<<(2*15) | 1U<<28 | 1U<<26 | 1U<<24; 	//Set pins 12-15 as Output(01)
 	GPIOE->ODR |= 1U<<15 | 1U<<14 | 1U<<13 | 1U<<12;				//Set ODR pins high 
@@ -126,25 +122,23 @@ void collector()
 	GPIOE->MODER &= ~(3U<<(2*15) | 3U<<28 | 3U<<26 | 3U<<24);//Set pins 12-15 as Input(00)
 	
 	//
-	while (GPIOE->IDR & 0x8000) counter++;									
-	
-	//
-	if (counter>threshold)										
-		GPIOE->ODR |= 1U<<8;
-	else 
-		GPIOE->ODR &= ~(1U<<8);
-	counter =0;
+	for (counter = 0; counter <= threshold ; counter++) 
+	{
+		delay(1);
+	};
+
 	//STILL NEED TO COLLECT THE DATA CORRECTLY 
 	
 	//Calls to convet raw sensor data into LCD interpretable commands 
 	ADCtoDisp(result, upper, lower, numBars); 	//Convert uint16_t result to int and split into 10's and 1's place
-	LLsensor = IRtoDisp(LLresult);		//Convert IR sensor input data to int corresponding to LCD char 'B' or 'W'
-	LCsensor = IRtoDisp(LCresult);
-	RCsensor = IRtoDisp(RCresult);
-	RRsensor = IRtoDisp(RRresult);
+	LLsensor = (GPIOE->IDR & 0x8000)? 1 : 22;		//Convert IR sensor input data to int corresponding to LCD char 'B' or 'W'
+	LCsensor = (GPIOE->IDR & 0x4000)? 1 : 22;
+	RCsensor = (GPIOE->IDR & 0x2000)? 1 : 22;
+	RRsensor = (GPIOE->IDR & 0x1000)? 1 : 22;
 	
 	//Display current sensor readings on LCD
 	characters_to_display[0] = numbers[upper];
+	characters_to_display[6] = special[numBars+2];
 	characters_to_display[1] = numbers[lower];
 	characters_to_display[2] = alpha[LLsensor];
 	characters_to_display[3] = alpha[LCsensor];
@@ -158,12 +152,12 @@ void collector()
 ////Initialize all components and read sensor inputs continuously
 int main(void)
 {
-	//System_Clock_Init();	//Start and initlize sys CLK
+	System_Clock_Init();	//Start and initlize sys CLK
 	LCD_Initialization();	//Initlize all LCD related registers and clocks
 	initADC();						//Initlize all ADC related registers and clocks
 	initIR();							//Initlize all IR sensor related registers and clocks
 	//initInterrupt();			//Initlize all Interrupt related registers
-	LCDupdate();
+	
 	while(1){
 	collector();					//'main' function; collects data and updates LCD
 	}

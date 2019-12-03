@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Dec 03 14:03:00 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Dec 03 16:30:13 2019
 <BR><P>
-<H3>Maximum Stack Usage =         56 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =         72 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-__rt_entry_main &rArr; main &rArr; collector &rArr; LCDupdate
+__rt_entry_main &rArr; main &rArr; collector &rArr; LCDupdate &rArr; char2mem
 <P>
 <H3>
 Functions with no stack information
@@ -241,8 +241,8 @@ Global Symbols
 <P><STRONG><a name="[a1]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[69]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; collector &rArr; LCDupdate
+<BR><BR>[Stack]<UL><LI>Max Depth = 72 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; collector &rArr; LCDupdate &rArr; char2mem
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -623,10 +623,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
 </UL>
 
-<P><STRONG><a name="[7d]"></a>IRtoDisp</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, main.o(i.IRtoDisp))
-<BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
-</UL>
-
 <P><STRONG><a name="[77]"></a>LCD_Clear</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, lcdinit.o(i.LCD_Clear))
 <BR><BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Initialization
 </UL>
@@ -654,44 +650,48 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Initialization
 </UL>
 
-<P><STRONG><a name="[78]"></a>LCDupdate</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, main.o(i.LCDupdate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = LCDupdate
+<P><STRONG><a name="[78]"></a>LCDupdate</STRONG> (Thumb, 206 bytes, Stack size 16 bytes, main.o(i.LCDupdate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = LCDupdate &rArr; char2mem
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;char2mem
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
+<BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
 </UL>
 
-<P><STRONG><a name="[7f]"></a>PE_Init</STRONG> (Thumb, 136 bytes, Stack size 0 bytes, irinit.o(i.PE_Init))
-<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
+<P><STRONG><a name="[7e]"></a>PE_Init</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, irinit.o(i.PE_Init))
+<BR><BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
 </UL>
 
 <P><STRONG><a name="[b]"></a>SysTick_Handler</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, irinit.o(i.SysTick_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l476xx.o(RESET)
 </UL>
-<P><STRONG><a name="[80]"></a>SysTick_Init</STRONG> (Thumb, 130 bytes, Stack size 8 bytes, irinit.o(i.SysTick_Init))
+<P><STRONG><a name="[7f]"></a>SysTick_Init</STRONG> (Thumb, 130 bytes, Stack size 8 bytes, irinit.o(i.SysTick_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SysTick_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
+<BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
 </UL>
 
-<P><STRONG><a name="[79]"></a>char2mem</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, lcd_structures.o(i.char2mem))
-<BR><BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCDupdate
+<P><STRONG><a name="[80]"></a>System_Clock_Init</STRONG> (Thumb, 380 bytes, Stack size 0 bytes, sys_clk_init.o(i.System_Clock_Init))
+<BR><BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7a]"></a>collector</STRONG> (Thumb, 346 bytes, Stack size 40 bytes, main.o(i.collector))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = collector &rArr; LCDupdate
+<P><STRONG><a name="[79]"></a>char2mem</STRONG> (Thumb, 1772 bytes, Stack size 16 bytes, lcd_structures.o(i.char2mem))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = char2mem
+</UL>
+<BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCDupdate
+</UL>
+
+<P><STRONG><a name="[7a]"></a>collector</STRONG> (Thumb, 364 bytes, Stack size 40 bytes, main.o(i.collector))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = collector &rArr; LCDupdate &rArr; char2mem
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCDupdate
-<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IRtoDisp
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADCtoDisp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7b]"></a>delay</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, irinit.o(i.delay))
+<P><STRONG><a name="[7b]"></a>delay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, irinit.o(i.delay))
 <BR><BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
 </UL>
 
@@ -699,23 +699,23 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7e]"></a>initIR</STRONG> (Thumb, 12 bytes, Stack size 4 bytes, irinit.o(i.initIR))
+<P><STRONG><a name="[7d]"></a>initIR</STRONG> (Thumb, 12 bytes, Stack size 4 bytes, irinit.o(i.initIR))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = initIR &rArr; SysTick_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Init
-<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PE_Init
+<BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Init
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PE_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[6a]"></a>main</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = main &rArr; collector &rArr; LCDupdate
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = main &rArr; collector &rArr; LCDupdate &rArr; char2mem
 </UL>
-<BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
+<BR>[Calls]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initIR
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initADC
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_Clock_Init
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Initialization
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;collector
-<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCDupdate
 </UL>
 <BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
