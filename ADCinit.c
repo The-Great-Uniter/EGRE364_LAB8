@@ -84,7 +84,8 @@ void initADC()
 	//ADC_SMPR3_SMP5 = Channel 5 Sample time selection
 	//Sample time for first channel, NOTE: These bits must be written only when ADON=0. 
 	ADC1->SMPR1  &= ~ADC_SMPR1_SMP6;      //Clear ch6 ADC Sample Time setting 
-	ADC1->SMPR1  |= 11 << 18;             //Set ch6 sample time to: 0011: 24.5 ADC clock cycles. [24.5*80MHz = 0.3 us]
+	//Set ch6 sample time to: 0011: 24.5 ADC clock cycles. [24.5*80MHz = 0.3 us]
+	ADC1->SMPR1  |= 11 << 18;             
 	
 ////Enable ADC1     
 	ADC1->CR |= ADC_CR_ADEN;  						//EN ADC conversion	

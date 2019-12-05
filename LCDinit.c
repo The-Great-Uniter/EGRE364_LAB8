@@ -210,7 +210,8 @@ void LCD_Configure(void)
 	
 	/* LCD control register */
 	// VSEL: Voltage source selection
-	// When the LCD is based on the internal step-up converter, the VLCD pin should be connected to a capacitor (see the product datasheet for further information).
+	// When the LCD is based on the internal step-up converter, the VLCD pin should be connected to a capacitor 
+	// (see the product datasheet for further information).
 	LCD->CR &= ~LCD_CR_VSEL;    // 0 = internal source, 1 = external source (VLCD pin)	
 	
 	// LCD controller enable

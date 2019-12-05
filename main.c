@@ -14,7 +14,7 @@ void ADC1_2_IRQHandler(void)
 	
 	//ADC End of Conversion (EOC)
 	if ((ADC1->ISR & ADC_ISR_EOC) == ADC_ISR_EOC) {
-		ADC1->ISR |= ADC_ISR_EOC;	//Cear by writing 1 to it or by reading the corresponding ADCx_JDRy register
+		ADC1->ISR |= ADC_ISR_EOC;	//Cearb by writing 1 to it 
 	}
 	
 	//ADC End of Injected Sequence of Conversions  (JEOS)
@@ -107,8 +107,10 @@ void collector()
 	};
 	
 	//Calls to convet raw sensor data into LCD interpretable commands 
-	ADCtoDisp(result); 													//Convert uint16_t result to int and split into 10's and 1's place
-	LLsensor = (GPIOE->IDR & 0x8000)? 1 : 22;		//Convert IR sensor input data to int corresponding to LCD char 'B' or 'W'
+	//Convert uint16_t result to int and split into 10's and 1's place
+	ADCtoDisp(result); 			
+	//Convert IR sensor input data to int corresponding to LCD char 'B' or 'W'	
+	LLsensor = (GPIOE->IDR & 0x8000)? 1 : 22;		
 	LCsensor = (GPIOE->IDR & 0x4000)? 1 : 22;
 	RCsensor = (GPIOE->IDR & 0x2000)? 1 : 22;
 	RRsensor = (GPIOE->IDR & 0x1000)? 1 : 22;
