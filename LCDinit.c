@@ -231,18 +231,19 @@ void LCD_Clear(void)
 {
   uint8_t counter = 0;
 
-  // Wait until LCD ready */  
-	while ((LCD->SR & LCD_SR_UDR) != 0); // Wait for Update Display Request Bit
+  //Wait until LCD ready   
+	while ((LCD->SR & LCD_SR_UDR) != 0); //Wait for Update Display Request Bit
   
   for (counter = 0; counter <= 15; counter++) {
     LCD->RAM[counter] = 0;
   }
 
-  /* Update the LCD display */
+  //Update the LCD display 
 	LCD->SR |= LCD_SR_UDR; 
 }
 
 
+//Setup init function 
 void LCD_Initialization(void)
 {
 	LCD_PIN_Init();

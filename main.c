@@ -4,7 +4,7 @@
 
 ////Sensor data storage vars 
 volatile uint32_t result, LLresult, LCresult, RCresult, RRresult;
-
+int upper,lower,numBars; 
 
 ////Interrupt Handlers
 //Interrupt Handler for ADC 1/2 
@@ -26,54 +26,31 @@ void ADC1_2_IRQHandler(void)
 
 ////Functions to convert sensor data into LCD readable commands 
 //Converts a uint16_t number to int and splits it into 10's and 1's place
-void ADCtoDisp(uint16_t result, int upper, int lower, int bar) 
+void ADCtoDisp(uint16_t result) 
 {
-	int intResult = result; 	//Cast to int 
+	//int distance = (36.1/((result)/1000.0))-1.0; 	//Apply linear equation to input 
+	//int distance = 125.0/(((result*3.0)/1024.0)-0.1607)-1;
+	//int distance = 34.0/(result/1024.0);
 	
-	switch (intResult)
-	{
-		case 3000:			//MAX range 
-			upper = 8; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 0; 			//100%  of sensor range used 
-			break; 
-		case 2000:			
-			upper = 7; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 1; 			//75%  of sensor range used 
-			break; 
-		case 1000:			 
-			upper = 6; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 2; 			//50%  of sensor range used 
-			break; 
-		case 500:			 
-			upper = 5; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 2; 			//50%  of sensor range used 
-			break; 
-		case 250:			 
-			upper = 4; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 3; 			//25%  of sensor range used 
-			break; 
-		case 125:			 
-			upper = 3; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 3; 			//25%  of sensor range used 
-			break; 
-		case 75:			 
-			upper = 2; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 4; 			//0%  of sensor range used 
-			break; 
-		case 25:				//MIN range
-			upper = 1; 		//Get digit for LCD position[0]; 10's place
-			lower = 0;		//Get digit for LCD position[1]; 1's place
-			bar = 4; 			//0%  of sensor range used 
-			break; 
-	}
+	int distance = 29.0/((result*3.0)/1024.0);	//Apply linear equation to input
+	//int distance = ((result*3.0)/102.4);//409.60);
+	
+	upper = distance/10;											//Isolate 10's place
+	lower = distance%10; 											//Isolate 1's place
+
+	//Determines % of sensor's distance 
+	if (distance <= 20)												//0-25% of max range
+		numBars  = 4;
+	else if(distance <= 40)										//25-50% of max range
+		numBars  = 3;
+	else if(distance <= 60)										//50-75% of max range
+		numBars  = 2;
+	else if(distance <= 80)										//75-100% of max range
+		numBars  = 1;
+	else 																			//Out of accurate range
+		numBars = 0; 
 }
+
 
 ////LCD Update routine 
 encoding characters_to_display[7] = {0};
@@ -98,53 +75,58 @@ void LCDupdate()
 	
 	while ((LCD->SR&LCD_SR_UDD) == 0); 					//Wait for update display done
 	
-	LCD->CLR |= 1<<3; 													//
+	LCD->CLR |= 1<<3; 													//ACK LCD updated 
+	
+	delay(70);
 }
 
 
 ////Reads sensor data and sends results to LCD                      
 void collector()
 {
-	int upper = 0, lower = 0, numBars = 0, LLsensor = 1, LCsensor = 0, RCsensor = 0, RRsensor = 0;
+	int  LLsensor = 1, LCsensor = 0, RCsensor = 0, RRsensor = 0;
 	
 	//Starts ADC Conversion and collects the result 
 	ADC1->CR |= ADC_CR_ADSTART;				
-		while ( (ADC123_COMMON->CSR | ADC_CSR_EOC_MST) == 0);
-		result = ADC1->DR;
+	while ( (ADC123_COMMON->CSR | ADC_CSR_EOC_MST) == 0);
+	result = ADC1->DR;
 	
 	//IR sensor controller 
 	int32_t counter = 0;
-	int32_t threshold = 80;
+	int32_t threshold = 10;
 	
 	GPIOE->MODER |= 1U<<(2*15) | 1U<<28 | 1U<<26 | 1U<<24; 	//Set pins 12-15 as Output(01)
 	GPIOE->ODR |= 1U<<15 | 1U<<14 | 1U<<13 | 1U<<12;				//Set ODR pins high 
 	delay(10);																							//Wait for 10ms 
 	GPIOE->MODER &= ~(3U<<(2*15) | 3U<<28 | 3U<<26 | 3U<<24);//Set pins 12-15 as Input(00)
 	
-	//
+	//Delay for cap to discharge 
 	for (counter = 0; counter <= threshold ; counter++) 
 	{
 		delay(1);
 	};
-
-	//STILL NEED TO COLLECT THE DATA CORRECTLY 
 	
 	//Calls to convet raw sensor data into LCD interpretable commands 
-	ADCtoDisp(result, upper, lower, numBars); 	//Convert uint16_t result to int and split into 10's and 1's place
+	ADCtoDisp(result); 													//Convert uint16_t result to int and split into 10's and 1's place
 	LLsensor = (GPIOE->IDR & 0x8000)? 1 : 22;		//Convert IR sensor input data to int corresponding to LCD char 'B' or 'W'
 	LCsensor = (GPIOE->IDR & 0x4000)? 1 : 22;
 	RCsensor = (GPIOE->IDR & 0x2000)? 1 : 22;
 	RRsensor = (GPIOE->IDR & 0x1000)? 1 : 22;
 	
 	//Display current sensor readings on LCD
+	if(lower < 10 & upper <10){									//Ensure that distance is less than 100cm
 	characters_to_display[0] = numbers[upper];
-	characters_to_display[6] = special[numBars+2];
 	characters_to_display[1] = numbers[lower];
+	}
+	else {																			//If distance over 100cm display FF 
+	characters_to_display[0] = alpha[5];
+	characters_to_display[1] = alpha[5];
+	}
+	characters_to_display[6] = special[numBars+2];
 	characters_to_display[2] = alpha[LLsensor];
 	characters_to_display[3] = alpha[LCsensor];
 	characters_to_display[4] = alpha[RCsensor];
 	characters_to_display[5] = alpha[RRsensor];
-	//STILL NEED TO FILL LCD BARS BASED ON DISTANCE % OF RANGE SENSOR 
 	LCDupdate();
 }
 
@@ -156,10 +138,9 @@ int main(void)
 	LCD_Initialization();	//Initlize all LCD related registers and clocks
 	initADC();						//Initlize all ADC related registers and clocks
 	initIR();							//Initlize all IR sensor related registers and clocks
-	//initInterrupt();			//Initlize all Interrupt related registers
 	
 	while(1){
-	collector();					//'main' function; collects data and updates LCD
+	collector();					//'main' function; collects data and updates LCD indefinitely
 	}
   //EOP
 }

@@ -1,5 +1,5 @@
 Dependencies for Project 'project', Target 'Target 1': (DO NOT MODIFY !)
-F (.\main.c)(0x5DE6CDB7)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\main.c)(0x5DE84D4A)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (stm32l476xx.h)(0x55F6F0D6)
 I (C:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm4.h)(0x5D263976)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5CEC22A2)
@@ -27,7 +27,7 @@ I (LCD_structures.h)(0x5DE6BC9A)
 I (C:\Keil_v5\ARM\ARMCC\include\inttypes.h)(0x5CEC22A0)
 F (.\LCD_structures.h)(0x5DE6BC9A)()
 F (.\setupHeaders.h)(0x5DE6A986)()
-F (.\ADCinit.c)(0x5DE6A606)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\adcinit.o --omf_browse .\objects\adcinit.crf --depend .\objects\adcinit.d)
+F (.\ADCinit.c)(0x5DE84B85)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\adcinit.o --omf_browse .\objects\adcinit.crf --depend .\objects\adcinit.d)
 I (stm32l476xx.h)(0x55F6F0D6)
 I (C:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm4.h)(0x5D263976)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5CEC22A2)
@@ -37,7 +37,7 @@ I (C:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (C:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h)(0x5C8FF694)
 I (C:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include\system_stm32l4xx.h)(0x5B606B8E)
 I (setupHeaders.h)(0x5DE6A986)
-F (.\LCDinit.c)(0x5DE6A662)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\lcdinit.o --omf_browse .\objects\lcdinit.crf --depend .\objects\lcdinit.d)
+F (.\LCDinit.c)(0x5DE81676)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-IC:\Users\super\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32L476xx-o .\objects\lcdinit.o --omf_browse .\objects\lcdinit.crf --depend .\objects\lcdinit.d)
 I (stm32l476xx.h)(0x55F6F0D6)
 I (C:\Users\super\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm4.h)(0x5D263976)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5CEC22A2)
