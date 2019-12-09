@@ -53,6 +53,8 @@ void ADCtoDisp(uint16_t result)
 
 
 ////LCD Update routine 
+
+// character buffer, each position corresponds with a particular digit.
 encoding characters_to_display[7] = {0};
 
 //Decodes and sends char data to the LCD RAM
@@ -61,8 +63,10 @@ void LCDupdate()
 	//LCD->SR |= LCD_SR_UDR; 	
 	while ((LCD->SR&LCD_SR_UDR) != 0); 					//Wait for Update Display Request Bit
 	
+	// next line is for debugging purposes only
 	//LCD->RAM[0] = 0xffffffff; 
 	
+	// call our char2mem function to write our buffer to the LCD.
 	char2mem(digit_1, characters_to_display[0]);
 	char2mem(digit_2, characters_to_display[1]);
 	char2mem(digit_3, characters_to_display[2]);
@@ -101,10 +105,9 @@ void collector()
 	GPIOE->MODER &= ~(3U<<(2*15) | 3U<<28 | 3U<<26 | 3U<<24);//Set pins 12-15 as Input(00)
 	
 	//Delay for cap to discharge 
-	for (counter = 0; counter <= threshold ; counter++) 
-	{
+	for (counter = 0; counter <= threshold ; counter++) {
 		delay(1);
-	};
+	}
 	
 	//Calls to convet raw sensor data into LCD interpretable commands 
 	//Convert uint16_t result to int and split into 10's and 1's place
@@ -117,12 +120,11 @@ void collector()
 	
 	//Display current sensor readings on LCD
 	if(lower < 10 & upper <10){									//Ensure that distance is less than 100cm
-	characters_to_display[0] = numbers[upper];
-	characters_to_display[1] = numbers[lower];
-	}
-	else {																			//If distance over 100cm display FF 
-	characters_to_display[0] = alpha[5];
-	characters_to_display[1] = alpha[5];
+		characters_to_display[0] = numbers[upper];
+		characters_to_display[1] = numbers[lower];
+	} else {																			//If distance over 100cm display FF 
+		characters_to_display[0] = alpha[5];
+		characters_to_display[1] = alpha[5];
 	}
 	characters_to_display[6] = special[numBars+2];
 	characters_to_display[2] = alpha[LLsensor];
@@ -142,7 +144,7 @@ int main(void)
 	initIR();							//Initlize all IR sensor related registers and clocks
 	
 	while(1){
-	collector();					//'main' function; collects data and updates LCD indefinitely
+		collector();					//'main' function; collects data and updates LCD indefinitely
 	}
   //EOP
 }

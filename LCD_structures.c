@@ -1,12 +1,15 @@
 #include "stm32l476xx.h"
 #include "LCD_structures.h"
 
+// You may want to set your editor settings to use the Tab character instead of spaces.
+
+// Bitmap of the entirety of LCD RAM we want to modify.
 typedef struct LCD_RAM_MASK {
-	uint32_t     : 3;
-	uint32_t _1g : 1;
-	uint32_t _1e : 1;
-	uint32_t _2g : 1;
-	uint32_t _2e : 1;
+	uint32_t     : 3; // bit padding.
+	uint32_t _1g : 1; // digit position 1, segment g
+	uint32_t _1e : 1; // digit position 1, segment e
+	uint32_t _2g : 1; // digit position 2, segment g
+	uint32_t _2e : 1; // etc...
 	uint32_t     : 1;
 	uint32_t _6m : 1;
 	uint32_t _6b : 1;
@@ -74,11 +77,11 @@ typedef struct LCD_RAM_MASK {
 	uint32_t _2q : 1;
 	uint32_t _2p : 1;
 	uint32_t     : 1;
-	uint32_t _1bar : 1;
+	uint32_t _1bar : 1; // bar position, segment 1
 	uint32_t _6k : 1;
 	uint32_t     : 2;
 	uint32_t _2k : 1;
-	uint32_t _2col : 1;
+	uint32_t _2col : 1; // digit position 2, segment colon
 	uint32_t _3q : 1;
 	uint32_t _3p : 1;
 	uint32_t     : 1;
@@ -87,7 +90,7 @@ typedef struct LCD_RAM_MASK {
 	uint32_t _1k : 1;
 	uint32_t _1col : 1;
 	uint32_t _5k : 1;
-	uint32_t _3bar : 1;
+	uint32_t _3bar : 1; // bar position, segment 3
 	uint32_t _6q : 1;
 	uint32_t     : 1;
 	uint32_t _3k : 1;
@@ -107,11 +110,11 @@ typedef struct LCD_RAM_MASK {
 	uint32_t _2h : 1;
 	uint32_t _2n : 1;
 	uint32_t     : 1;
-	uint32_t _0bar : 1;
+	uint32_t _0bar : 1; // bar position, segment 0
 	uint32_t _6j : 1;
 	uint32_t     : 2;
 	uint32_t _2j : 1;
-	uint32_t _2dp : 1;
+	uint32_t _2dp : 1; // digit position 2, segment decimal
 	uint32_t _3h : 1;
 	uint32_t _3n : 1;
 	uint32_t     : 1;
@@ -120,7 +123,7 @@ typedef struct LCD_RAM_MASK {
 	uint32_t _1j : 1;
 	uint32_t _1dp : 1;
 	uint32_t _5j : 1;
-	uint32_t _2bar : 1;
+	uint32_t _2bar : 1; // bar position, segment 2
 	uint32_t _6h : 1;
 	uint32_t     : 1;
 	uint32_t _3j : 1;
@@ -135,11 +138,13 @@ typedef struct LCD_RAM_MASK {
 	uint32_t     : 28;
 } LCD_RAM_MASK;
 
+// assign our bitmask to the proper area in memory.
 #define LCD_RAM ((LCD_RAM_MASK*)(LCD->RAM))
 
 void char2mem (uint8_t digit, encoding character) {
 	switch(digit) {
 	case digit_1:
+		// use our bitmap to write to the proper locations in memory.
 		LCD_RAM->_1a = character.A;
 		LCD_RAM->_1b = character.B;
 		LCD_RAM->_1c = character.C;
@@ -253,52 +258,53 @@ void char2mem (uint8_t digit, encoding character) {
 
 const encoding numbers[10] = {
 	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1, .K=1, .Q=1},	// 0
-	{.K=1, .B=1, .C=1},																// 1
-	{.A=1, .B=1, .M=1, .G=1, .E=1, .D=1},							// 2
-	{.A=1, .B=1, .M=1, .C=1, .D=1},										// 3
-	{.F=1, .G=1, .M=1, .B=1, .C=1},										// 4
-	{.A=1, .F=1, .G=1, .M=1, .C=1, .D=1},							// 5
-	{.A=1, .F=1, .E=1, .D=1, .C=1, .M=1, .G=1},				// 6
-	{.A=1, .B=1, .C=1},																// 7
-	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1, .G=1, .M=1}, // 8
-	{.D=1, .C=1, .B=1, .A=1, .F=1, .G=1, .M=1}				// 9
+	{.K=1, .B=1, .C=1},									// 1
+	{.A=1, .B=1, .M=1, .G=1, .E=1, .D=1},				// 2
+	{.A=1, .B=1, .M=1, .C=1, .D=1},						// 3
+	{.F=1, .G=1, .M=1, .B=1, .C=1},						// 4
+	{.A=1, .F=1, .G=1, .M=1, .C=1, .D=1},				// 5
+	{.A=1, .F=1, .E=1, .D=1, .C=1, .M=1, .G=1},			// 6
+	{.A=1, .B=1, .C=1},									// 7
+	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1, .G=1, .M=1},	// 8
+	{.D=1, .C=1, .B=1, .A=1, .F=1, .G=1, .M=1}			// 9
 };
 
 const encoding alpha[26] = {
-	{.E=1, .F=1, .A=1, .B=1, .C=1, .G=1, .M=1}, // A
-	{.J=1, .P=1, .A=1, .B=1, .M=1, .C=1, .D=1}, // B
-	{.A=1, .F=1, .E=1, .D=1},										// C
-	{.J=1, .P=1, .A=1, .B=1, .C=1, .D=1},				// D
-	{.A=1, .F=1, .G=1, .E=1, .D=1},							// E
-	{.A=1, .F=1, .E=1, .G=1},										// F
-	{.A=1, .F=1, .E=1, .D=1, .C=1, .M=1},				// G
-	{.F=1, .E=1, .G=1, .M=1, .B=1, .C=1},				// H
-	{.J=1, .P=1, .A=1, .D=1},										// I
-	{.B=1, .C=1, .D=1, .E=1},										// J
-	{.F=1, .E=1, .G=1, .K=1, .N=1},							// K
-	{.F=1, .E=1, .D=1},													// L
-	{.E=1, .F=1, .H=1, .K=1, .B=1, .C=1},				// M
-	{.E=1, .F=1, .H=1, .N=1, .C=1, .B=1},				// N
-	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1},				// O
-	{.E=1, .F=1, .A=1, .B=1, .M=1, .G=1},				// P
+	{.E=1, .F=1, .A=1, .B=1, .C=1, .G=1, .M=1},	// A
+	{.J=1, .P=1, .A=1, .B=1, .M=1, .C=1, .D=1},	// B
+	{.A=1, .F=1, .E=1, .D=1},					// C
+	{.J=1, .P=1, .A=1, .B=1, .C=1, .D=1},		// D
+	{.A=1, .F=1, .G=1, .E=1, .D=1},				// E
+	{.A=1, .F=1, .E=1, .G=1},					// F
+	{.A=1, .F=1, .E=1, .D=1, .C=1, .M=1},		// G
+	{.F=1, .E=1, .G=1, .M=1, .B=1, .C=1},		// H
+	{.J=1, .P=1, .A=1, .D=1},					// I
+	{.B=1, .C=1, .D=1, .E=1},					// J
+	{.F=1, .E=1, .G=1, .K=1, .N=1},				// K
+	{.F=1, .E=1, .D=1},							// L
+	{.E=1, .F=1, .H=1, .K=1, .B=1, .C=1},		// M
+	{.E=1, .F=1, .H=1, .N=1, .C=1, .B=1},		// N
+	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1},		// O
+	{.E=1, .F=1, .A=1, .B=1, .M=1, .G=1},		// P
 	{.A=1, .B=1, .C=1, .D=1, .E=1, .F=1, .N=1}, // Q
 	{.E=1, .F=1, .A=1, .B=1, .M=1, .G=1, .N=1}, // R
-	{.A=1, .F=1, .G=1, .M=1, .C=1, .D=1},				// S
-	{.J=1, .P=1, .A=1},													// T
-	{.B=1, .C=1, .D=1, .E=1, .F=1},							// U
-	{.F=1, .E=1, .Q=1, .K=1},										// V
-	{.F=1, .E=1, .Q=1, .N=1, .C=1, .B=1},				// W
-	{.H=1, .N=1, .K=1, .Q=1},										// X
-	{.H=1, .P=1, .K=1},													// Y
-	{.A=1, .K=1, .Q=1, .D=1}										// Z
+	{.A=1, .F=1, .G=1, .M=1, .C=1, .D=1},		// S
+	{.J=1, .P=1, .A=1},							// T
+	{.B=1, .C=1, .D=1, .E=1, .F=1},				// U
+	{.F=1, .E=1, .Q=1, .K=1},					// V
+	{.F=1, .E=1, .Q=1, .N=1, .C=1, .B=1},		// W
+	{.H=1, .N=1, .K=1, .Q=1},					// X
+	{.H=1, .P=1, .K=1},							// Y
+	{.A=1, .K=1, .Q=1, .D=1}					// Z
 };
 
-const encoding special[7] = { // some of these may be ORRed with specific digits to produce desired display
-	{.G=1, .M=1},													// -
-	{.Col=1},															// :
-	{.DP=1},															// .
-	{.Bar0=1},														// |
-	{.Bar0=1, .Bar1=1},										// ||
-	{.Bar0=1, .Bar1=1, .Bar2=1},					// |||
-	{.Bar0=1, .Bar1=1, .Bar2=1, .Bar3=1}	// ||||
+// some of these may be ORRed with specific digits to produce desired display
+const encoding special[7] = {
+	{.G=1, .M=1},						// -
+	{.Col=1},							// :
+	{.DP=1},							// .
+	{.Bar0=1},							// special character 1 for BAR position
+	{.Bar0=1, .Bar1=1},					// special character 2 for BAR position
+	{.Bar0=1, .Bar1=1, .Bar2=1},		// special character 3 for BAR position
+	{.Bar0=1, .Bar1=1, .Bar2=1, .Bar3=1}// special character 4 for BAR position
 };
